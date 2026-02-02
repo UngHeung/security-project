@@ -1,5 +1,11 @@
+import RootRouter from "./root-router";
+
 export function App() {
-  return <div>New Security Project</div>;
+  return (
+    <>
+      <RootRouter />
+    </>
+  );
 }
 
 export default App;
