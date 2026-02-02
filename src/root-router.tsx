@@ -4,12 +4,15 @@ import DashboardPage from "./pages/dashboard";
 import GuideDetailPage from "./pages/guide-detail";
 import GuideEditPage from "./pages/guide-edit";
 import SearchPage from "./pages/search";
+import SignUpPage from "./pages/sign-up";
 
 export default function RootRouter() {
   return (
     <Routes>
       <Route element={<GlobalLayout />}>
         <Route path="/" element={<DashboardPage />} />
+
+        <Route path="/sign-up" element={<SignUpPage />} />
 
         <Route path="/search" element={<SearchPage />} />
 
