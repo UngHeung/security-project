@@ -26,7 +26,7 @@ type GuideEditType = "CREATE" | "UPDATE";
 // 임시값
 const prevTitle = "제목입니다. 긴 제목은 줄이 바뀝니다. 바뀌는지 확인해볼까요?";
 const writer = "홍길동";
-const prevPosition = "파트장";
+const position = "파트장";
 const prevImageFiles = [
   {
     file: new File(["dummy image"], "https://picsum.photos/800/600", {
@@ -83,9 +83,6 @@ const resizeImageFiles = async (
 
 export default function GuideEditPage({ type }: { type: GuideEditType }) {
   const [title, setTitle] = useState(type === "UPDATE" ? prevTitle : "");
-  const [position, setPosition] = useState(
-    type === "UPDATE" ? prevPosition : [],
-  );
   const [imageFiles, setImageFiles] = useState<
     { file: File; imageUrl: string }[]
   >(type === "UPDATE" ? prevImageFiles : []);
