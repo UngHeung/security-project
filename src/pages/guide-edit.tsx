@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import imageCompression from "browser-image-compression";
+import resizeImageFiles from "@/lib/image-resizer";
 import { ImageAdd02Icon } from "hugeicons-react";
 import { useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
@@ -52,34 +52,6 @@ const prevContent = `내용입니다.
 내용이에요.`;
 const prevTags = ["반출", "정보자산", "노트북"];
 const prevLocations = ["자산", "정보자산"];
-
-// resizer
-const resizeImageFiles = async (
-  files: File[],
-  size: number,
-  previewSize?: number,
-) => {
-  if (!files.length) return;
-
-  const options = {
-    maxSizeMb: 1,
-    maxWidthOrHeight: size,
-  };
-
-  try {
-    const compressedFiles = await Promise.all(
-      files.map((file) => imageCompression(file, options)),
-    );
-
-    return compressedFiles;
-  } catch (error) {
-    console.error(error);
-
-    toast.error("문제가 발생했습니다. 관리자에게 문의하세요", {
-      position: "top-center",
-    });
-  }
-};
 
 export default function GuideEditPage({ type }: { type: GuideEditType }) {
   const [title, setTitle] = useState(type === "UPDATE" ? prevTitle : "");
