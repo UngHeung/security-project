@@ -257,12 +257,16 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           type="file"
           accept="image/*"
           multiple
-          className="hidden"
+          hidden
           onChange={async (event: ChangeEvent<HTMLInputElement>) => {
             if (!event.target.files) return;
 
             const files = Array.from(event.target.files);
-            const resizedFiles = await resizeImageFiles(files, 1024);
+            const resizedFiles = (await resizeImageFiles(
+              "multi",
+              1024,
+              files,
+            )) as File[];
 
             resizedFiles!.map((file) =>
               setImageFiles((prevImageUrls) => [
