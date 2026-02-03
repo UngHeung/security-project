@@ -1,12 +1,18 @@
 import imageCompression from "browser-image-compression";
 import { toast } from "sonner";
 
+type ResizeFileType = "multi" | "single";
+
 const resizeImageFiles = async (
-  files: File[],
+  type: ResizeFileType,
   size: number,
+  files?: File[],
+  file?: File,
   previewSize?: number,
 ) => {
-  if (!files.length) return;
+  if (!files && !file) return;
+  if (type === "multi" && files && !(files.length > 0)) return;
+  if (type === "single" && !files) return;
 
   const options = {
     maxSizeMb: 1,
@@ -14,11 +20,18 @@ const resizeImageFiles = async (
   };
 
   try {
-    const compressedFiles = await Promise.all(
-      files.map((file) => imageCompression(file, options)),
-    );
+    if (type === "multi") {
+      const compressedFiles = await Promise.all(
+        files!.map((file) => imageCompression(file, options)),
+      );
 
-    return compressedFiles;
+      return compressedFiles;
+    } else {
+      const response = await Promise.all([imageCompression(file!, options)]);
+      const compressedFile = response[0];
+
+      return compressedFile;
+    }
   } catch (error) {
     console.error(error);
 
