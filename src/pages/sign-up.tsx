@@ -7,6 +7,7 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -15,13 +16,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import resizeImageFiles from "@/lib/image-resizer";
+import { useState, type ChangeEvent } from "react";
+import defaultAvatar from "@/assets/default-avatar.jpg";
+import { toast } from "sonner";
 
 type PositionType = "파트장" | "팀장" | "책임" | "선임" | "주임" | "사원";
 
+type AvatarType = {
+  file: File;
+  avatarUrl: string;
+};
+
 export default function SignUpPage() {
   const [name, setName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const [avatar, setAvatar] = useState<AvatarType | undefined>(undefined);
   const [position, setPosition] = useState<PositionType>("사원");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,9 +40,43 @@ export default function SignUpPage() {
     <div className="flex flex-col gap-20">
       {/* avatar & preview */}
       <div className="flex flex-col items-center gap-2">
-        <div className="bg-muted mb-2 h-30 w-30 overflow-hidden rounded-full">
-          {avatarUrl.length > 0 && <img src={avatarUrl} alt="avatar-image" />}
-          <Input type="file" disabled hidden />
+        <div>
+          <Label
+            htmlFor="avatar_image"
+            className="bg-muted mb-2 h-20 w-20 cursor-pointer overflow-hidden rounded-full"
+          >
+            <img
+              src={avatar ? avatar.avatarUrl : defaultAvatar}
+              alt="avatar-image"
+              className="h-full w-full object-cover"
+            />
+          </Label>
+
+          <Input
+            id="avatar_image"
+            type="file"
+            accept="imgage/*"
+            hidden
+            onChange={async (event: ChangeEvent<HTMLInputElement>) => {
+              if (!event.target.files) return;
+              console.log(event.target.files);
+
+              const file = Array.from(event.target.files)[0];
+              const resizedFile = (await resizeImageFiles(
+                "single",
+                200,
+                [],
+                file,
+              )) as File;
+
+              setAvatar({
+                file: resizedFile,
+                avatarUrl: URL.createObjectURL(resizedFile),
+              });
+
+              event.target.value = "";
+            }}
+          />
         </div>
         <div className="flex gap-1">
           {name.length > 0 ? (
@@ -139,7 +182,16 @@ export default function SignUpPage() {
 
         {/* buttons */}
         <Field>
-          <Button className="cursor-pointer" onSubmit={() => {}}>
+          <Button
+            className="cursor-pointer"
+            onClick={() => {
+              const message = `${name}
+${position}
+${email}
+${avatar?.avatarUrl}`;
+              toast.message(message, { position: "top-center" });
+            }}
+          >
             저장
           </Button>
           <Button
