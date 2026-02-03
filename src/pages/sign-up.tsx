@@ -29,6 +29,7 @@ export default function SignUpPage() {
 
   return (
     <div className="flex flex-col gap-20">
+      {/* avatar & preview */}
       <div className="flex flex-col items-center gap-2">
         <div className="bg-muted mb-2 h-30 w-30 overflow-hidden rounded-full">
           {avatarUrl.length > 0 && <img src={avatarUrl} alt="avatar-image" />}
@@ -52,8 +53,11 @@ export default function SignUpPage() {
           )}
         </div>
       </div>
+
+      {/* input field */}
       <FieldSet className="flex flex-col gap-2">
         <div className="flex gap-2">
+          {/* name */}
           <Field className="basis-4/6">
             <FieldLabel className="ml-1">이름</FieldLabel>
             <Input
@@ -67,6 +71,8 @@ export default function SignUpPage() {
               실명을 입력해주세요.
             </FieldDescription>
           </Field>
+
+          {/* position */}
           <Field className="basis-2/6">
             <FieldLabel className="ml-1">직책</FieldLabel>
             <Select
@@ -90,6 +96,8 @@ export default function SignUpPage() {
             <FieldDescription className="ml-1"></FieldDescription>
           </Field>
         </div>
+
+        {/* email */}
         <Field>
           <FieldLabel className="ml-1">이메일</FieldLabel>
           <Input
@@ -103,6 +111,8 @@ export default function SignUpPage() {
             비밀번호 변경 및 초기화에 사용됩니다.
           </FieldDescription>
         </Field>
+
+        {/* password */}
         <FieldGroup>
           <Field>
             <FieldLabel className="ml-1">비밀번호</FieldLabel>
@@ -126,6 +136,8 @@ export default function SignUpPage() {
             )}
           </Field>
         </FieldGroup>
+
+        {/* buttons */}
         <Field>
           <Button className="cursor-pointer" onSubmit={() => {}}>
             저장

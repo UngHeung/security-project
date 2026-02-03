@@ -32,6 +32,7 @@ const content = `가이드 내용이 표시됩니다. 내용이 2줄을 넘어�
 const listItem = (
   <li className="hover:bg-muted mb-2 cursor-default rounded-md border-b p-2 text-sm">
     <div className="gap-2">
+      {/* header */}
       <header className="flex flex-col items-end gap-2">
         <h3 className="w-full font-bold">{title}</h3>
         <div className="flex items-center gap-1 pb-2 text-xs">
@@ -59,6 +60,7 @@ export default function SearchPage() {
   return (
     <>
       <Accordion defaultValue={["item-1"]} className="border-0">
+        {/* search with keyword */}
         <AccordionItem value={"item-1"}>
           <AccordionTrigger className="cursor-pointer">
             검색어로 찾기
@@ -76,12 +78,14 @@ export default function SearchPage() {
           </AccordionContent>
         </AccordionItem>
 
+        {/* search with tags */}
         <AccordionItem value={"item-2"}>
           <AccordionTrigger className="cursor-pointer">
             태그로 찾기
           </AccordionTrigger>
           <AccordionContent>
             <SelectGroup className="mb-2 flex justify-between gap-2">
+              {/* first tag */}
               <div className="flex w-full flex-col justify-start">
                 <Select defaultValue={"미선택"}>
                   <SelectLabel>반출/환입</SelectLabel>
@@ -96,6 +100,7 @@ export default function SearchPage() {
                 </Select>
               </div>
 
+              {/* second tag */}
               <div className="flex w-full flex-col justify-start">
                 <Select defaultValue={"미선택"}>
                   <SelectLabel>카테고리</SelectLabel>
@@ -118,6 +123,7 @@ export default function SearchPage() {
                 </Select>
               </div>
 
+              {/* third tag */}
               <div className="flex w-full flex-col justify-start">
                 <Select defaultValue={"미선택"}>
                   <SelectLabel>자산종류</SelectLabel>
@@ -144,6 +150,7 @@ export default function SearchPage() {
         </AccordionItem>
       </Accordion>
 
+      {/* list */}
       <div className="border-t px-2 pt-4">
         <ul>
           {listItem}

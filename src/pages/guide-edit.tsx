@@ -105,6 +105,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
   return (
     <div className="flex flex-col gap-2">
       <div>
+        {/* title */}
         <Label className="m-1" htmlFor="input-title">
           제목
         </Label>
@@ -117,6 +118,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
       </div>
 
       <div>
+        {/* locations */}
         <Label className="m-1" htmlFor="input-locations">
           위치
           <span className="text-muted-foreground -ml-1.5 text-xs">
@@ -133,7 +135,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           }}
           value={locations.join(" ")}
         />
-
+        {/* locations preview */}
         <div>
           <ul className="mt-2 flex items-center gap-0.5 px-1 text-sm">
             <li>
@@ -165,9 +167,16 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
         </div>
       </div>
 
+      {/* tags */}
       <div className="mt-2">
-        <Label>태그</Label>
+        <Label>
+          태그
+          <span className="text-muted-foreground -ml-1.5 text-xs">
+            (필수 선택)
+          </span>
+        </Label>
         <SelectGroup className="mb-2 flex justify-between gap-2">
+          {/* first tag */}
           <div className="flex w-full flex-col justify-start">
             <Select
               value={tags[0]}
@@ -190,6 +199,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
             </Select>
           </div>
 
+          {/* second tag */}
           <div className="flex w-full flex-col justify-start">
             <Select
               value={tags[1]}
@@ -218,6 +228,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
             </Select>
           </div>
 
+          {/* third tag */}
           <div className="flex w-full flex-col justify-start">
             <Select
               value={tags[2]}
@@ -248,17 +259,17 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
         </SelectGroup>
       </div>
 
+      {/* content */}
       <div>
         <Label className="m-1" htmlFor="input-content">
           내용
-          <span className="text-muted-foreground -ml-1.5 text-xs">(필수)</span>
         </Label>
         <Textarea
           value={content}
           onChange={(event) => setContent(event.target.value)}
           id="input-content"
           className="max-h-100 min-h-40 resize-none"
-          placeholder="내용*"
+          placeholder="필수"
         />
       </div>
 

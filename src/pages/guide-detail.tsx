@@ -24,6 +24,7 @@ const locations = ["자산", "정보자산"];
 export default function GuideDetailPage() {
   return (
     <div>
+      {/* header */}
       <header className="flex flex-col items-start gap-2 border-b py-2">
         <h2 className="font-semibold">{title}</h2>
         <div className="flex w-full items-center justify-end gap-1 text-sm">
@@ -33,6 +34,7 @@ export default function GuideDetailPage() {
         </div>
       </header>
 
+      {/* locations */}
       <ul className="mt-2 flex items-center gap-0.5 px-1 text-sm">
         <li>
           <span className="bg-muted-foreground text-muted mr-1.5 rounded-lg border-0 px-1 py-0.5">
@@ -61,6 +63,7 @@ export default function GuideDetailPage() {
         })}
       </ul>
 
+      {/* images */}
       <div>
         <Carousel>
           <CarouselContent className="mt-3">
@@ -76,11 +79,13 @@ export default function GuideDetailPage() {
         </Carousel>
       </div>
 
+      {/* content */}
       <div className="flex flex-col">
         <p className="border-b border-dashed p-4 text-base whitespace-pre-wrap">
           {content}
         </p>
 
+        {/* tags */}
         <ul className="mt-2 flex items-center justify-end gap-1">
           {tags.map((tag, index) => (
             <Badge key={index} variant={"secondary"} className="cursor-default">
