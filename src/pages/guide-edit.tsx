@@ -107,11 +107,10 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
       <div>
         <Label className="m-1" htmlFor="input-title">
           제목
-          <span className="text-muted-foreground -ml-1.5 text-xs">(필수)</span>
         </Label>
         <Input
           id="input-title"
-          placeholder="제목*"
+          placeholder="필수"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
         />
@@ -120,12 +119,16 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
       <div>
         <Label className="m-1" htmlFor="input-locations">
           위치
+          <span className="text-muted-foreground -ml-1.5 text-xs">
+            (띄어쓰기로 구분합니다. ex - 자산 자산반출)
+          </span>
         </Label>
         <Input
           placeholder="선택사항"
           onChange={(event) => {
             if (!event.target.value.trim()) setLocations([]);
-            const value = event.target.value.trim();
+
+            const value = event.target.value;
             setLocations(value.split(/\s+/));
           }}
           value={locations.join(" ")}
@@ -166,7 +169,15 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
         <Label>태그</Label>
         <SelectGroup className="mb-2 flex justify-between gap-2">
           <div className="flex w-full flex-col justify-start">
-            <Select defaultValue={tags[0]}>
+            <Select
+              value={tags[0]}
+              onValueChange={(value) =>
+                setTags((prev) => {
+                  const newTags = [value!, prev[1], prev[2]];
+                  return newTags;
+                })
+              }
+            >
               <SelectLabel>반출/환입</SelectLabel>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="반출/환입" />
@@ -180,7 +191,15 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           </div>
 
           <div className="flex w-full flex-col justify-start">
-            <Select defaultValue={tags[1]}>
+            <Select
+              value={tags[1]}
+              onValueChange={(value) =>
+                setTags((prev) => {
+                  const newTags = [prev[0], value!, prev[2]];
+                  return newTags;
+                })
+              }
+            >
               <SelectLabel>카테고리</SelectLabel>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="반출/환입" />
@@ -200,7 +219,15 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           </div>
 
           <div className="flex w-full flex-col justify-start">
-            <Select defaultValue={tags[2]}>
+            <Select
+              value={tags[2]}
+              onValueChange={(value) =>
+                setTags((prev) => {
+                  const newTags = [prev[0], prev[1], value!];
+                  return newTags;
+                })
+              }
+            >
               <SelectLabel>자산종류</SelectLabel>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="반출/환입" />
