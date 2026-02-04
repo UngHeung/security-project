@@ -21,7 +21,7 @@ import { ImageAdd02Icon } from "hugeicons-react";
 import { useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
 
-type GuideEditType = "CREATE" | "UPDATE";
+type GuideEditType = "create" | "update";
 
 // 임시값
 const prevTitle = "제목입니다. 긴 제목은 줄이 바뀝니다. 바뀌는지 확인해볼까요?";
@@ -54,16 +54,16 @@ const prevTags = ["반출", "정보자산", "노트북"];
 const prevLocations = ["자산", "정보자산"];
 
 export default function GuideEditPage({ type }: { type: GuideEditType }) {
-  const [title, setTitle] = useState(type === "UPDATE" ? prevTitle : "");
+  const [title, setTitle] = useState(type === "update" ? prevTitle : "");
   const [imageFiles, setImageFiles] = useState<
     { file: File; imageUrl: string }[]
-  >(type === "UPDATE" ? prevImageFiles : []);
-  const [content, setContent] = useState(type === "UPDATE" ? prevContent : "");
+  >(type === "update" ? prevImageFiles : []);
+  const [content, setContent] = useState(type === "update" ? prevContent : "");
   const [tags, setTags] = useState(
-    type === "UPDATE" ? prevTags : ["미선택", "미선택", "미선택"],
+    type === "update" ? prevTags : ["미선택", "미선택", "미선택"],
   );
   const [locations, setLocations] = useState(
-    type === "UPDATE" ? prevLocations : [],
+    type === "update" ? prevLocations : [],
   );
 
   const handleDeleteImage = (deleteFile: { file: File; imageUrl: string }) => {
