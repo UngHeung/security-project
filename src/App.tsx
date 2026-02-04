@@ -1,9 +1,12 @@
+import SessionProvider from "./provider/session-provider";
 import RootRouter from "./root-router";
 
 export function App() {
   return (
     <>
-      <RootRouter />
+      <SessionProvider>
+        <RootRouter />
+      </SessionProvider>
     </>
   );
 }
