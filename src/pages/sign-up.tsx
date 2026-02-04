@@ -20,6 +20,7 @@ import resizeImageFiles from "@/lib/image-resizer";
 import { useState, type ChangeEvent } from "react";
 import defaultAvatar from "@/assets/default-avatar.jpg";
 import { toast } from "sonner";
+import { signUp } from "@/api/auth";
 
 type PositionType = "파트장" | "팀장" | "책임" | "선임" | "주임" | "사원";
 
@@ -184,11 +185,10 @@ export default function SignUpPage() {
         <Field className="mt-4">
           <Button
             onClick={() => {
-              const message = `${name}
-${position}
-${email}
-${avatar?.avatarUrl}`;
-              toast.message(message, { position: "top-center" });
+              signUp({
+                email,
+                password,
+              });
             }}
           >
             저장
