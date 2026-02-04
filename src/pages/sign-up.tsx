@@ -181,9 +181,8 @@ export default function SignUpPage() {
         </FieldGroup>
 
         {/* buttons */}
-        <Field>
+        <Field className="mt-4">
           <Button
-            className="cursor-pointer"
             onClick={() => {
               const message = `${name}
 ${position}
@@ -194,11 +193,7 @@ ${avatar?.avatarUrl}`;
           >
             저장
           </Button>
-          <Button
-            variant={"secondary"}
-            className="cursor-pointer"
-            onClick={() => {}}
-          >
+          <Button variant={"secondary"} onClick={() => {}}>
             취소
           </Button>
         </Field>

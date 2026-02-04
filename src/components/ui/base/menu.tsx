@@ -32,9 +32,7 @@ export default function Menu() {
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="cursor-pointer">
-              게시판
-            </NavigationMenuTrigger>
+            <NavigationMenuTrigger>게시판</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="flex flex-col">
                 <li>
