@@ -19,6 +19,8 @@ export default function SignInPage() {
 
   return (
     <div>
+      <h3 className="border-muted mb-4 border-b py-2 font-bold">로그인</h3>
+
       {/* input field */}
       <FieldSet className="flex flex-col gap-2">
         {/* email */}

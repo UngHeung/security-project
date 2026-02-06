@@ -22,9 +22,9 @@ export default function ForgetPasswordPage() {
 
   return (
     <div>
-      <h2 className="border-muted mb-4 border-b py-2 font-bold">
+      <h3 className="border-muted mb-4 border-b py-2 font-bold">
         비밀번호 재설정
-      </h2>
+      </h3>
 
       <Label className="text-muted-foreground">
         등록된 이메일로 비밀번호 재설정 링크 발송

@@ -27,7 +27,12 @@ export default function AuthStatus() {
             {isLoggedIn ? (
               <>
                 <li>
-                  <Button variant={"ghost"}>프로필</Button>
+                  <Button
+                    variant={"ghost"}
+                    onClick={() => navigate("/my-profile")}
+                  >
+                    프로필
+                  </Button>
                 </li>
                 <li>
                   <Button variant={"ghost"} onClick={() => {}}>
