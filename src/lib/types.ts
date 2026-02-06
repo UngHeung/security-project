@@ -4,7 +4,7 @@ export type ProfileEntity = Database["public"]["Tables"]["profile"]["Row"];
 
 export type UseMutationCallback = {
   onSuccess?: () => void;
-  onError?: () => void;
+  onError?: (error: Error) => void;
   onMutate?: () => void;
   onSettled?: () => void;
 };
