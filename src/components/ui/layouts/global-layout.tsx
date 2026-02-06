@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 import { Toaster } from "sonner";
-import AuthStatus from "./auth-status";
-import Menu from "./menu";
+import AuthStatus from "../base/auth-status";
+import Menu from "../base/menu";
 
 export default function GlobalLayout() {
   return (

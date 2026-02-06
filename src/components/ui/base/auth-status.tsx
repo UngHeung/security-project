@@ -6,15 +6,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useSession } from "@/store/session";
 import { useNavigate } from "react-router";
 
 // 임시
 
 export default function AuthStatus() {
+  const session = useSession();
   const navigate = useNavigate();
-
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = session?.user;
 
   return (
     <>
@@ -30,10 +30,7 @@ export default function AuthStatus() {
                   <Button variant={"ghost"}>프로필</Button>
                 </li>
                 <li>
-                  <Button
-                    variant={"ghost"}
-                    onClick={() => setIsLoggedIn(false)}
-                  >
+                  <Button variant={"ghost"} onClick={() => {}}>
                     로그아웃
                   </Button>
                 </li>

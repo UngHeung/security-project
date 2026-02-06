@@ -35,7 +35,7 @@ export default function Menu() {
             <NavigationMenuTrigger>게시판</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="flex flex-col">
-                <li>
+                <li key={1}>
                   <Button
                     variant="ghost"
                     onClick={() => navigate("/guide/write")}
@@ -43,7 +43,7 @@ export default function Menu() {
                     가이드작성
                   </Button>
                 </li>
-                <li>
+                <li key={2}>
                   <Button
                     variant="ghost"
                     onClick={() => navigate("/guide/update")}
@@ -51,12 +51,12 @@ export default function Menu() {
                     가이드수정
                   </Button>
                 </li>
-                <li>
+                <li key={3}>
                   <Button variant="ghost" onClick={() => navigate("/guide/1")}>
                     가이드샘플
                   </Button>
                 </li>
-                <li>
+                <li key={4}>
                   <Button
                     variant="ghost"
                     onClick={() => navigate("/board/notice")}

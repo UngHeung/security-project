@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router";
-import GlobalLayout from "./components/ui/base/global-layout";
-import GuestOnlyLayout from "./components/ui/base/guest-only-layout";
-import MemberOnlyLayout from "./components/ui/base/member-only-layout";
+import GlobalLayout from "./components/ui/layouts/global-layout";
+import GuestOnlyLayout from "./components/ui/layouts/guest-only-layout";
+import MemberOnlyLayout from "./components/ui/layouts/member-only-layout";
 import ForgetPasswordPage from "./pages/auth/forget-password";
 import ResetPasswordPage from "./pages/auth/reset-password";
 import SignInPage from "./pages/auth/sign-in";

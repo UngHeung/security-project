@@ -1,5 +1,5 @@
 import { useSession } from "@/store/session";
-import { Navigate, Outlet, useNavigate } from "react-router";
+import { Navigate, Outlet } from "react-router";
 
 export default function GuestOnlyLayout() {
   const session = useSession();
