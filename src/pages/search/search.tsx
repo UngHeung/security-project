@@ -58,7 +58,8 @@ const listItem = (
 
 export default function SearchPage() {
   return (
-    <>
+    <div>
+      <h3 className="border-muted mb-4 border-b py-2 font-bold">검색</h3>
       <Accordion defaultValue={["item-1"]} className="border-0">
         {/* search with keyword */}
         <AccordionItem value={"item-1"}>
@@ -158,6 +159,6 @@ export default function SearchPage() {
           {listItem}
         </ul>
       </div>
-    </>
+    </div>
   );
 }

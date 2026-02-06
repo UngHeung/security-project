@@ -1,5 +1,4 @@
 import { signUp } from "@/api/auth";
-import defaultAvatar from "@/assets/default-avatar.jpg";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -9,17 +8,7 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import resizeImageFiles from "@/lib/image-resizer";
-import { useState, type ChangeEvent } from "react";
+import { useState } from "react";
 
 type PositionType = "파트장" | "팀장" | "책임" | "선임" | "주임" | "사원";
 
@@ -35,6 +24,8 @@ export default function SignUpPage() {
 
   return (
     <div className="flex flex-col gap-20">
+      <h3 className="border-muted mb-4 border-b py-2 font-bold">회원가입</h3>
+
       {/* input field */}
       <FieldSet className="flex flex-col gap-2">
         {/* email */}
