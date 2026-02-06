@@ -9,9 +9,9 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
   const setSession = useSetSession();
   const isSessionLoaded = useIsSessionLoaded();
 
-  const { data, isLoading: isProfileLoading } = useProfileData(
-    session?.user.id,
-  );
+  // const { data, isLoading: isProfileLoading } = useProfileData(
+  //   session?.user.id,
+  // );
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_, session) => {
@@ -20,7 +20,7 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   if (!isSessionLoaded) return <GlobalLoader />;
-  if (isProfileLoading) return <GlobalLoader />;
+  // if (isProfileLoading) return <GlobalLoader />;
 
   return children;
 }

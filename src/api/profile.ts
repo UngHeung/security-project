@@ -35,4 +35,8 @@ export async function updateProfile({
     })
     .eq("id", userId)
     .single();
+
+  if (error) return error;
+
+  return data;
 }
