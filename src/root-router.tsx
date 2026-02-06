@@ -10,6 +10,7 @@ import DashboardPage from "./pages/dashboard";
 import GuideDetailPage from "./pages/post/guide-detail";
 import GuideEditPage from "./pages/post/guide-edit";
 import SearchPage from "./pages/search/search";
+import ProfileDetailPage from "./pages/profile/profile-detail";
 
 export default function RootRouter() {
   return (
@@ -33,6 +34,16 @@ export default function RootRouter() {
         <Route element={<MemberOnlyLayout />}>
           {/* auth */}
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+          {/* profile */}
+          <Route
+            path="/my-profile"
+            element={<ProfileDetailPage isMyProfile={true} />}
+          />
+          <Route
+            path="/profile"
+            element={<ProfileDetailPage isMyProfile={false} />}
+          />
 
           {/* guide */}
           <Route
