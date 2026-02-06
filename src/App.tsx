@@ -1,13 +1,11 @@
+import RootRouter from "@/root-router";
 import SessionProvider from "./provider/session-provider";
-import RootRouter from "./root-router";
 
 export function App() {
   return (
-    <>
-      <SessionProvider>
-        <RootRouter />
-      </SessionProvider>
-    </>
+    <SessionProvider>
+      <RootRouter />
+    </SessionProvider>
   );
 }
 
