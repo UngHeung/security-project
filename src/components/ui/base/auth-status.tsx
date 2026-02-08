@@ -1,3 +1,4 @@
+import { signOut } from "@/api/auth";
 import defaultAvatar from "@/assets/default-avatar.jpg";
 import ProfileButton from "@/components/ui/base/profile-button";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,7 @@ export default function AuthStatus() {
                   </Button>
                 </li>
                 <li>
-                  <Button variant={"ghost"} onClick={() => {}}>
+                  <Button variant={"ghost"} onClick={signOut}>
                     로그아웃
                   </Button>
                 </li>
