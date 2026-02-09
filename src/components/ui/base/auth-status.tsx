@@ -7,29 +7,36 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useProfileData } from "@/hooks/queries/use-profile-data";
 import { useSession } from "@/store/session";
 import { useNavigate } from "react-router";
-
-// 임시
 
 export default function AuthStatus() {
   const session = useSession();
   const navigate = useNavigate();
-  const isLoggedIn = session?.user;
+  const user = session?.user;
+
+  const { data: profile, isPending: isFetchingProfilePending } = useProfileData(
+    user?.id,
+  );
 
   return (
     <>
       <Popover>
-        <PopoverTrigger>
-          <ProfileButton size={20} avatarUrl={defaultAvatar} />
+        <PopoverTrigger disabled={user && isFetchingProfilePending}>
+          <ProfileButton
+            size={20}
+            avatarUrl={profile?.avatar_url || defaultAvatar}
+          />
         </PopoverTrigger>
         <PopoverContent className="max-w-20">
           <ul className="flex flex-col items-start gap-2">
-            {isLoggedIn ? (
+            {user ? (
               <>
                 <li>
                   <Button
                     variant={"ghost"}
+                    disabled={isFetchingProfilePending}
                     onClick={() => navigate("/my-profile")}
                   >
                     프로필
