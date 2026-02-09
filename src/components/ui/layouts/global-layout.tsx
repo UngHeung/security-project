@@ -1,7 +1,6 @@
+import Menu from "@/components/ui/base/menu";
+import ProfileButton from "@/components/ui/base/profile-button";
 import { Outlet } from "react-router";
-import { Toaster } from "sonner";
-import AuthStatus from "../base/auth-status";
-import Menu from "../base/menu";
 
 export default function GlobalLayout() {
   return (
@@ -12,13 +11,12 @@ export default function GlobalLayout() {
           <Menu />
         </div>
         <div className="flex basis-1/6 justify-center gap-1">
-          <AuthStatus />
+          <ProfileButton />
         </div>
       </header>
       <main className="max-h-[calc(100vh-var(--spacing)*16.5)] pt-4">
         <Outlet />
       </main>
-      <Toaster />
     </div>
   );
 }
