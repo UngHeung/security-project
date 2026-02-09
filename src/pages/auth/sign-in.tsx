@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useSignInWithPassword } from "@/hooks/mutations/use-sign-in-with-password";
 import { generateErrorMessage } from "@/lib/error";
 import { useRef, useState } from "react";
+import { Link } from "react-router";
 import { toast } from "sonner";
 
 export default function SignInPage() {
@@ -87,6 +88,19 @@ export default function SignInPage() {
             취소
           </Button>
         </Field>
+
+        <div className="flex items-center justify-end gap-1 pr-0.5">
+          <Link className="text-muted-foreground text-xs" to={"/sign-up"}>
+            회원가입
+          </Link>
+          <span className="text-muted text-xs">|</span>
+          <Link
+            className="text-muted-foreground text-xs"
+            to={"/forget-password"}
+          >
+            비밀번호찾기
+          </Link>
+        </div>
       </FieldSet>
     </div>
   );

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useSignUp } from "@/hooks/mutations/use-sign-up";
 import { generateErrorMessage } from "@/lib/error";
 import { useRef, useState } from "react";
+import { Link } from "react-router";
 import { toast } from "sonner";
 
 export default function SignUpPage() {
@@ -113,6 +114,12 @@ export default function SignUpPage() {
             취소
           </Button>
         </Field>
+
+        <div className="flex items-center justify-end pr-0.5">
+          <Link className="text-muted-foreground text-xs" to={"/sign-in"}>
+            로그인
+          </Link>
+        </div>
       </FieldSet>
     </div>
   );
