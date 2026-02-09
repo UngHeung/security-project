@@ -2,19 +2,46 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useSignInWithPassword } from "@/hooks/mutations/use-sign-in-with-password";
-import { useState } from "react";
+import { generateErrorMessage } from "@/lib/error";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { mutate, isPending } = useSignInWithPassword();
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  const { mutate: signIn, isPending: isSignInPending } = useSignInWithPassword({
+    onError: (error) => {
+      const message = generateErrorMessage(error);
+
+      toast.error(message, {
+        position: "top-center",
+      });
+
+      passwordRef.current!.focus();
+    },
+    onSuccess: () => {
+      toast.message("로그인 성공", { position: "top-center" });
+    },
+  });
 
   const handleSignIn = () => {
-    if (!email.trim()) return;
-    if (!password.trim()) return;
+    if (!email.trim()) {
+      toast.error("이메일을 확인해주세요.", { position: "top-center" });
+      emailRef.current!.focus();
+      return;
+    }
 
-    mutate({ email, password });
+    if (!password.trim()) {
+      toast.error("비밀번호를 확인해주세요.", { position: "top-center" });
+      passwordRef.current!.focus();
+      return;
+    }
+
+    signIn({ email, password });
   };
 
   return (
@@ -27,7 +54,8 @@ export default function SignInPage() {
         <Field>
           <FieldLabel className="ml-1">이메일</FieldLabel>
           <Input
-            disabled={isPending}
+            disabled={isSignInPending}
+            ref={emailRef}
             id="email"
             type="email"
             value={email}
@@ -38,7 +66,8 @@ export default function SignInPage() {
         <Field>
           <FieldLabel className="ml-1">비밀번호</FieldLabel>
           <Input
-            disabled={isPending}
+            disabled={isSignInPending}
+            ref={passwordRef}
             value={password}
             onChange={(event) => setPassword(event?.target.value)}
             type="password"
@@ -47,10 +76,14 @@ export default function SignInPage() {
 
         {/* buttons */}
         <Field className="mt-4">
-          <Button disabled={isPending} onClick={handleSignIn}>
+          <Button disabled={isSignInPending} onClick={handleSignIn}>
             저장
           </Button>
-          <Button disabled={isPending} variant={"secondary"} onClick={() => {}}>
+          <Button
+            disabled={isSignInPending}
+            variant={"secondary"}
+            onClick={() => {}}
+          >
             취소
           </Button>
         </Field>
