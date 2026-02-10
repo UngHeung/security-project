@@ -109,13 +109,6 @@ export default function SignUpPage() {
           <Button disabled={isSignUpPending} onClick={handleSignUp}>
             저장
           </Button>
-          <Button
-            disabled={isSignUpPending}
-            variant={"secondary"}
-            onClick={() => {}}
-          >
-            취소
-          </Button>
         </Field>
 
         <div className="flex items-center justify-end pr-0.5">

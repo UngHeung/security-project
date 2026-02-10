@@ -80,13 +80,6 @@ export default function SignInPage() {
           <Button disabled={isSignInPending} onClick={handleSignIn}>
             저장
           </Button>
-          <Button
-            disabled={isSignInPending}
-            variant={"secondary"}
-            onClick={() => {}}
-          >
-            취소
-          </Button>
         </Field>
 
         <div className="flex items-center justify-end gap-1 pr-0.5">
