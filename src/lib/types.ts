@@ -2,6 +2,7 @@ import { type Database } from "@/database.types";
 import type { POSITION_MAP } from "./constants";
 
 export type ProfileEntity = Database["public"]["Tables"]["profile"]["Row"];
+export type GuideEntity = Database["public"]["Tables"]["guide"]["Row"];
 
 export type UseMutationCallback = {
   onSuccess?: () => void;
