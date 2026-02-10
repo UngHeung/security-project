@@ -72,8 +72,15 @@ export default function GuideEditPage() {
   const [title, setTitle] = useState(guideEditorStore.title || "");
   const [content, setContent] = useState(guideEditorStore.content || "");
   const [tags, setTags] = useState(
-    guideEditorStore.tags?.split(" ") || ["미선택", "미선택", "미선택"],
+    (guideEditorStore.tags.length > 1 && guideEditorStore.tags?.split(" ")) || [
+      "미선택",
+      "미선택",
+      "미선택",
+    ],
   );
+  useEffect(() => {
+    console.log(tags);
+  }, [tags]);
   const [locations, setLocations] = useState<string[]>(
     guideEditorStore.locations?.split(" ").filter(Boolean) || [],
   );
@@ -363,13 +370,18 @@ export default function GuideEditPage() {
           onChange={(event) => handleSelectImage(event)}
         />
 
-        <Button
-          disabled={isPending}
-          onClick={handleEditGuide}
-          className="cursor-pointer"
-        >
-          저장
-        </Button>
+        <div className="flex gap-2">
+          <Button disabled={isPending} onClick={handleEditGuide}>
+            저장
+          </Button>
+          <Button
+            variant={"secondary"}
+            disabled={isPending}
+            onClick={() => navigate(-1)}
+          >
+            취소
+          </Button>
+        </div>
       </div>
 
       {images.length > 0 && (
