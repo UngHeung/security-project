@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/popover";
 import { useProfileData } from "@/hooks/queries/use-profile-data";
 import { useSession } from "@/store/session";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 export default function ProfileButton() {
@@ -16,13 +17,15 @@ export default function ProfileButton() {
   const navigate = useNavigate();
   const user = session?.user;
 
+  const [isMenuOpen, setIsOpen] = useState(false);
+
   const { data: profile, isPending: isFetchingProfilePending } = useProfileData(
     user?.id,
   );
 
   return (
     <>
-      <Popover>
+      <Popover open={isMenuOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger disabled={user && isFetchingProfilePending}>
           <ProfileImage avatarUrl={profile?.avatar_url || defaultAvatar} />
         </PopoverTrigger>
@@ -34,13 +37,22 @@ export default function ProfileButton() {
                   <Button
                     variant={"ghost"}
                     disabled={isFetchingProfilePending}
-                    onClick={() => navigate("/my-profile")}
+                    onClick={() => {
+                      navigate("/my-profile");
+                      setIsOpen(false);
+                    }}
                   >
                     프로필
                   </Button>
                 </li>
                 <li>
-                  <Button variant={"ghost"} onClick={signOut}>
+                  <Button
+                    variant={"ghost"}
+                    onClick={() => {
+                      signOut();
+                      setIsOpen(false);
+                    }}
+                  >
                     로그아웃
                   </Button>
                 </li>
@@ -50,7 +62,10 @@ export default function ProfileButton() {
                 <li>
                   <Button
                     variant={"ghost"}
-                    onClick={() => navigate("/sign-in")}
+                    onClick={() => {
+                      navigate("/sign-in");
+                      setIsOpen(false);
+                    }}
                   >
                     로그인
                   </Button>
@@ -58,7 +73,10 @@ export default function ProfileButton() {
                 <li>
                   <Button
                     variant={"ghost"}
-                    onClick={() => navigate("/sign-up")}
+                    onClick={() => {
+                      navigate("/sign-up");
+                      setIsOpen(false);
+                    }}
                   >
                     회원가입
                   </Button>
