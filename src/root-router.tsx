@@ -9,6 +9,7 @@ import SignUpPage from "./pages/auth/sign-up";
 import DashboardPage from "./pages/dashboard";
 import GuideDetailPage from "./pages/post/guide-detail";
 import GuideEditPage from "./pages/post/guide-edit";
+import GuideList from "./pages/post/guide-list";
 import ProfileDetailPage from "./pages/profile/profile-detail";
 import ProfileUpdate from "./pages/profile/profile-update";
 import SearchPage from "./pages/search/search";
@@ -31,6 +32,7 @@ export default function RootRouter() {
 
         {/* guide */}
         <Route path="/guide/:id" element={<GuideDetailPage />} />
+        <Route path="/guide" element={<GuideList />} />
 
         <Route element={<MemberOnlyLayout />}>
           {/* auth */}
