@@ -1,10 +1,9 @@
-import { signUp } from "@/api/auth";
 import defaultAvatar from "@/assets/default-avatar.jpg";
+import { GlobalLoader } from "@/components/global-loader";
 import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldDescription,
-  FieldGroup,
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field";
@@ -18,10 +17,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useUpdateProfile } from "@/hooks/mutations/use-update-profile";
+import { useProfileData } from "@/hooks/queries/use-profile-data";
+import { generateErrorMessage } from "@/lib/error";
+import {
+  getPositionWithRole,
+  getRoleWithPosition,
+} from "@/lib/get-role-or-position";
 import resizeImageFiles from "@/lib/image-resizer";
+import type { PositionType, RoleType } from "@/lib/types";
+import { useSession } from "@/store/session";
 import { useState, type ChangeEvent } from "react";
-
-type PositionType = "파트장" | "팀장" | "책임" | "선임" | "주임" | "사원";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 type AvatarType = {
   file: File;
@@ -29,12 +37,90 @@ type AvatarType = {
 };
 
 export default function ProfileUpdate() {
-  const [name, setName] = useState("");
+  const session = useSession();
+  const user = session?.user;
+  const { data: profile, isLoading: isProfileLoading } = useProfileData(
+    user?.id,
+  );
+  const navigate = useNavigate();
+
+  const { mutate: updateProfile, isPending: isUpdateProfilePending } =
+    useUpdateProfile({
+      onError: (error) => {
+        const message = generateErrorMessage(error);
+
+        toast.error(message, { position: "top-center" });
+      },
+      onSuccess: () => {
+        toast.message("프로필 저장 성공", { position: "top-center" });
+        navigate("/my-profile");
+      },
+    });
+
+  const [name, setName] = useState(profile?.name);
   const [avatar, setAvatar] = useState<AvatarType | undefined>(undefined);
-  const [position, setPosition] = useState<PositionType>("사원");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [checkPassword, setCheckPassword] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState(
+    profile?.avatar_url || defaultAvatar,
+  );
+  const [role, setRole] = useState<RoleType>(Number(profile?.role) as RoleType);
+  const [position, setPosition] = useState<PositionType>(
+    getPositionWithRole(Number(profile?.role) as RoleType),
+  );
+
+  const handleChangeAvatar = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+
+    const file = Array.from(event.target.files)[0];
+    const resizedFile = (await resizeImageFiles(
+      "single",
+      200,
+      [],
+      file,
+    )) as File;
+
+    const previewAvatarUrl = URL.createObjectURL(resizedFile);
+
+    setAvatar({
+      file: resizedFile,
+      avatarUrl: previewAvatarUrl,
+    });
+
+    setAvatarUrl(previewAvatarUrl);
+
+    event.target.value = "";
+  };
+
+  const handleSelectPosition = (value: PositionType) => {
+    if (value === "임시") {
+      toast.error("임시 직책을 선택할 수 없습니다.", {
+        position: "top-center",
+      });
+      setPosition("사원");
+    } else {
+      setPosition(value as PositionType);
+    }
+  };
+
+  const handleUpdateProfile = () => {
+    if (!user) return;
+
+    if (position === "임시") {
+      toast.error("임시 직책을 선택할 수 없습니다.", {
+        position: "top-center",
+      });
+      setPosition("사원");
+      return;
+    }
+
+    updateProfile({
+      userId: user.id,
+      role: role as RoleType,
+      name: name!,
+      avatarImageFile: avatar?.file,
+    });
+  };
+
+  if (isProfileLoading) return <GlobalLoader />;
 
   return (
     <div className="flex flex-col gap-20">
@@ -46,7 +132,7 @@ export default function ProfileUpdate() {
             className="bg-muted mb-2 h-20 w-20 cursor-pointer overflow-hidden rounded-full"
           >
             <img
-              src={avatar ? avatar.avatarUrl : defaultAvatar}
+              src={avatarUrl}
               alt="avatar-image"
               className="h-full w-full object-cover"
             />
@@ -57,43 +143,15 @@ export default function ProfileUpdate() {
             type="file"
             accept="imgage/*"
             hidden
-            onChange={async (event: ChangeEvent<HTMLInputElement>) => {
-              if (!event.target.files) return;
-              console.log(event.target.files);
-
-              const file = Array.from(event.target.files)[0];
-              const resizedFile = (await resizeImageFiles(
-                "single",
-                200,
-                [],
-                file,
-              )) as File;
-
-              setAvatar({
-                file: resizedFile,
-                avatarUrl: URL.createObjectURL(resizedFile),
-              });
-
-              event.target.value = "";
-            }}
+            onChange={handleChangeAvatar}
           />
         </div>
-        <div className="flex gap-1">
-          {name.length > 0 ? (
-            <span className="font-semibold">{name}</span>
-          ) : (
-            <span className="text-muted font-semibold">{"홍길동"}</span>
-          )}
+        <div className="flex justify-center gap-1">
+          <span className="font-semibold">{name || profile?.name}</span>
           <span>{position}</span>
         </div>
         <div className="flex gap-1">
-          {email.length > 0 ? (
-            <span>{email}</span>
-          ) : (
-            <span className="text-muted font-semibold">
-              {"abcd@example.com"}
-            </span>
-          )}
+          <span>{user?.email}</span>
         </div>
       </div>
 
@@ -119,14 +177,21 @@ export default function ProfileUpdate() {
           <Field className="basis-2/6">
             <FieldLabel className="ml-1">직책</FieldLabel>
             <Select
-              defaultValue={position}
-              onValueChange={(value) => setPosition(value as PositionType)}
+              value={
+                position ||
+                getPositionWithRole(Number(profile?.role) as RoleType)
+              }
+              onValueChange={(value) => {
+                handleSelectPosition(value as PositionType);
+                setRole(getRoleWithPosition(value as PositionType));
+              }}
             >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
+                  <SelectItem value={"임시"}>임시</SelectItem>
                   <SelectItem value={"사원"}>사원</SelectItem>
                   <SelectItem value={"주임"}>주임</SelectItem>
                   <SelectItem value={"선임"}>선임</SelectItem>
@@ -140,61 +205,9 @@ export default function ProfileUpdate() {
           </Field>
         </div>
 
-        {/* email */}
-        <Field>
-          <FieldLabel className="ml-1">이메일</FieldLabel>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="abcd@example.com"
-          />
-          <FieldDescription className="ml-1">
-            비밀번호 변경 및 초기화에 사용됩니다.
-          </FieldDescription>
-        </Field>
-
-        {/* password */}
-        <FieldGroup>
-          <Field>
-            <FieldLabel className="ml-1">비밀번호</FieldLabel>
-            <Input
-              value={password}
-              onChange={(event) => setPassword(event?.target.value)}
-              type="password"
-            />
-          </Field>
-          <Field>
-            <FieldLabel className="ml-1">비밀번호확인</FieldLabel>
-            <Input
-              value={checkPassword}
-              onChange={(event) => setCheckPassword(event?.target.value)}
-              type="password"
-            />
-            {password !== checkPassword && checkPassword.length > 0 && (
-              <FieldDescription className="text-destructive ml-1">
-                비밀번호가 다릅니다.
-              </FieldDescription>
-            )}
-          </Field>
-        </FieldGroup>
-
         {/* buttons */}
         <Field className="mt-4">
-          <Button
-            onClick={() => {
-              // signUp({
-              //   email,
-              //   password,
-              //   name,
-              //   position,
-              //   avatar_url: avatar?.avatarUrl,
-              // });
-            }}
-          >
-            저장
-          </Button>
+          <Button onClick={handleUpdateProfile}>저장</Button>
           <Button variant={"secondary"} onClick={() => {}}>
             취소
           </Button>

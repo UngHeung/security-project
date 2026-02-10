@@ -9,8 +9,9 @@ import SignUpPage from "./pages/auth/sign-up";
 import DashboardPage from "./pages/dashboard";
 import GuideDetailPage from "./pages/post/guide-detail";
 import GuideEditPage from "./pages/post/guide-edit";
-import SearchPage from "./pages/search/search";
 import ProfileDetailPage from "./pages/profile/profile-detail";
+import ProfileUpdate from "./pages/profile/profile-update";
+import SearchPage from "./pages/search/search";
 
 export default function RootRouter() {
   return (
@@ -44,6 +45,7 @@ export default function RootRouter() {
             path="/profile"
             element={<ProfileDetailPage isMyProfile={false} />}
           />
+          <Route path="/profile-update" element={<ProfileUpdate />} />
 
           {/* guide */}
           <Route
