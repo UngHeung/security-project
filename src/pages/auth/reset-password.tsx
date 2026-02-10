@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
       <div className="flex justify-end">
         <Button
           disabled={isResetPasswordPending}
-          className="mt-2"
+          className="mt-4 w-full"
           onClick={handleResetPassword}
         >
           새로운 비밀번호 저장

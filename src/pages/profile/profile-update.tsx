@@ -129,7 +129,7 @@ export default function ProfileUpdate() {
         <div>
           <Label
             htmlFor="avatar_image"
-            className="bg-muted mb-2 h-20 w-20 cursor-pointer overflow-hidden rounded-full"
+            className="bg-muted mb-2 h-20 w-20 overflow-hidden rounded-full"
           >
             <img
               src={avatarUrl}
@@ -208,7 +208,7 @@ export default function ProfileUpdate() {
         {/* buttons */}
         <Field className="mt-4">
           <Button onClick={handleUpdateProfile}>저장</Button>
-          <Button variant={"secondary"} onClick={() => {}}>
+          <Button variant={"secondary"} onClick={() => navigate(-1)}>
             취소
           </Button>
         </Field>
