@@ -48,7 +48,15 @@ export type Database = {
           updated_at?: string | null
           writer_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "guide_writer_id_fkey1"
+            columns: ["writer_id"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profile: {
         Row: {
