@@ -7,17 +7,29 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 export default function Menu() {
   const navigate = useNavigate();
+
+  const [value, setValue] = useState<string | null>(null);
+
+  const handleNavigate = (link: string) => {
+    navigate(link);
+    setValue(null);
+  };
+
   return (
     <div>
-      <NavigationMenu>
+      <NavigationMenu
+        value={value}
+        onValueChange={(newValue) => setValue(newValue)}
+      >
         <NavigationMenuList className="gap-2">
           <NavigationMenuItem>
             <NavigationMenuLink>
-              <Button variant="ghost" onClick={() => navigate("/")}>
+              <Button variant="ghost" onClick={() => handleNavigate("/")}>
                 메인
               </Button>
             </NavigationMenuLink>
@@ -25,7 +37,7 @@ export default function Menu() {
 
           <NavigationMenuItem>
             <NavigationMenuLink>
-              <Button variant="ghost" onClick={() => navigate("/search")}>
+              <Button variant="ghost" onClick={() => handleNavigate("/search")}>
                 검색
               </Button>
             </NavigationMenuLink>
@@ -38,7 +50,7 @@ export default function Menu() {
                 <li key={1}>
                   <Button
                     variant="ghost"
-                    onClick={() => navigate("/guide/write")}
+                    onClick={() => handleNavigate("/guide/write")}
                   >
                     가이드작성
                   </Button>
@@ -46,20 +58,23 @@ export default function Menu() {
                 <li key={2}>
                   <Button
                     variant="ghost"
-                    onClick={() => navigate("/guide/update")}
+                    onClick={() => handleNavigate("/guide/update")}
                   >
                     가이드수정
                   </Button>
                 </li>
                 <li key={3}>
-                  <Button variant="ghost" onClick={() => navigate("/guide/1")}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleNavigate("/guide/1")}
+                  >
                     가이드샘플
                   </Button>
                 </li>
                 <li key={4}>
                   <Button
                     variant="ghost"
-                    onClick={() => navigate("/board/notice")}
+                    onClick={() => handleNavigate("/board/notice")}
                   >
                     공지사항
                   </Button>
