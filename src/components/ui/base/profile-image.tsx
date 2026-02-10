@@ -1,21 +1,13 @@
-export default function ProfileImage({
-  size,
-  avatarUrl,
-}: {
-  size: number;
-  avatarUrl?: string;
-}) {
+export default function ProfileImage({ avatarUrl }: { avatarUrl?: string }) {
   return (
     <>
       <div
-        className={`flex h-6 w-6 items-center justify-center overflow-hidden rounded-full border-none`}
+        className={`flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border-none`}
       >
         <img
           src={avatarUrl}
           alt="My avatar"
-          width={size}
-          height={size}
-          className="rounded-full"
+          className="h-full w-full rounded-full object-cover"
         />
       </div>
     </>

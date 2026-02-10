@@ -24,10 +24,7 @@ export default function ProfileButton() {
     <>
       <Popover>
         <PopoverTrigger disabled={user && isFetchingProfilePending}>
-          <ProfileImage
-            size={20}
-            avatarUrl={profile?.avatar_url || defaultAvatar}
-          />
+          <ProfileImage avatarUrl={profile?.avatar_url || defaultAvatar} />
         </PopoverTrigger>
         <PopoverContent className="max-w-20">
           <ul className="flex flex-col items-start gap-2">
