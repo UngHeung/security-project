@@ -7,20 +7,37 @@ export type CreateGuideType = Pick<
   "writer_id" | "title" | "content" | "locations" | "tags"
 >;
 
-export async function fetchGuideById(guideId: number) {
-  const { data, error } = await supabase
+export async function fetchGuideList({
+  from,
+  to,
+  writerId,
+}: {
+  from: number;
+  to: number;
+  userId?: string;
+  writerId?: string;
+}) {
+  const request = supabase
     .from("guide")
-    .select("*")
-    .eq("id", guideId)
-    .single();
+    .select("*, writer: profile!writer_id (*)")
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  if (writerId) request.eq("writer_id", writerId);
+
+  const { data, error } = await request;
 
   if (error) throw error;
 
   return data;
 }
 
-export async function fetchGuideList() {
-  const { data, error } = await supabase.from("guide").select("*");
+export async function fetchGuideById(guideId: number) {
+  const { data, error } = await supabase
+    .from("guide")
+    .select("*, writer: profile!writer_id (*)")
+    .eq("id", guideId)
+    .single();
 
   if (error) throw error;
 
