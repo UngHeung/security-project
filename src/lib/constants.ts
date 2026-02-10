@@ -7,6 +7,7 @@ export const QUERY_KEYS = {
   guide: {
     all: ["guide"],
     list: ["guide", "list"],
+    userList: (userId: string) => ["guide", "userList", userId],
     byId: (guideId: number) => ["guide", "byId", guideId],
   },
 };
