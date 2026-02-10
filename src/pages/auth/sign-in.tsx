@@ -76,7 +76,7 @@ export default function SignInPage() {
         </Field>
 
         {/* buttons */}
-        <Field className="mt-4">
+        <Field className="mt-2">
           <Button disabled={isSignInPending} onClick={handleSignIn}>
             저장
           </Button>

@@ -105,7 +105,7 @@ export default function SignUpPage() {
         </FieldGroup>
 
         {/* buttons */}
-        <Field className="mt-4">
+        <Field className="mt-2">
           <Button disabled={isSignUpPending} onClick={handleSignUp}>
             저장
           </Button>

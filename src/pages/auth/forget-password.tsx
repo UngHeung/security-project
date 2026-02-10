@@ -56,13 +56,21 @@ export default function ForgetPasswordPage() {
         onChange={(event) => setEmail(event.target.value)}
       />
 
-      <div className="flex justify-end">
+      <div className="flex flex-col justify-end">
         <Button
           disabled={isRequestPasswordResetEmailPending}
-          className="mt-2"
+          className="mt-4 w-full"
           onClick={handleSendEmail}
         >
           링크 발송
+        </Button>
+        <Button
+          disabled={isRequestPasswordResetEmailPending}
+          variant={"secondary"}
+          className="mt-2 w-full"
+          onClick={() => navigate(-1)}
+        >
+          취소
         </Button>
       </div>
     </div>
