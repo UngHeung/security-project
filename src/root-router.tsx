@@ -48,14 +48,8 @@ export default function RootRouter() {
           <Route path="/profile-update" element={<ProfileUpdate />} />
 
           {/* guide */}
-          <Route
-            path="/guide/write"
-            element={<GuideEditPage type="create" />}
-          />
-          <Route
-            path="/guide/update"
-            element={<GuideEditPage type="update" />}
-          />
+          <Route path="/guide/write" element={<GuideEditPage />} />
+          <Route path="/guide/update/:id" element={<GuideEditPage />} />
         </Route>
       </Route>
 

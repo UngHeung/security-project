@@ -16,63 +16,155 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useCreateGuide } from "@/hooks/mutations/guide/use-create-guide";
+import { useUpdateGuide } from "@/hooks/mutations/guide/use-update-guide";
+import { generateErrorMessage } from "@/lib/error";
 import resizeImageFiles from "@/lib/image-resizer";
-import { ImageAdd02Icon } from "hugeicons-react";
-import { useState, type ChangeEvent } from "react";
+import { useGuideEditor } from "@/store/guide-edit";
+import { useSession } from "@/store/session";
+import { Cancel02Icon, ImageAdd02Icon } from "hugeicons-react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 
-type GuideEditType = "create" | "update";
+type Image = {
+  file: File;
+  filePath: string;
+};
 
-// 임시값
-const prevTitle = "제목입니다. 긴 제목은 줄이 바뀝니다. 바뀌는지 확인해볼까요?";
-const writer = "홍길동";
-const position = "파트장";
-const prevImageFiles = [
-  {
-    file: new File(["dummy image"], "https://picsum.photos/800/600", {
-      type: "image/*",
-    }),
-    imageUrl: "https://picsum.photos/800/600",
-  },
-  {
-    file: new File(["dummy image"], "https://picsum.photos/800/600", {
-      type: "image/*",
-    }),
-    imageUrl: "https://picsum.photos/800/600",
-  },
-  {
-    file: new File(["dummy image"], "https://picsum.photos/800/600", {
-      type: "image/*",
-    }),
-    imageUrl: "https://picsum.photos/800/600",
-  },
-];
-const prevContent = `내용입니다.
-내용입니다.
-내용이에요.`;
-const prevTags = ["반출", "정보자산", "노트북"];
-const prevLocations = ["자산", "정보자산"];
+export default function GuideEditPage() {
+  const params = useParams<{ id: string }>();
+  const session = useSession();
+  const user = session?.user;
+  const navigate = useNavigate();
+  const guideEditorStore = useGuideEditor();
 
-export default function GuideEditPage({ type }: { type: GuideEditType }) {
-  const [title, setTitle] = useState(type === "update" ? prevTitle : "");
-  const [imageFiles, setImageFiles] = useState<
-    { file: File; imageUrl: string }[]
-  >(type === "update" ? prevImageFiles : []);
-  const [content, setContent] = useState(type === "update" ? prevContent : "");
+  const editType = params.id ? "update" : "create";
+
+  const {
+    mutate: createGuide,
+    data: createGuideData,
+    isPending: isCreateGuidePending,
+  } = useCreateGuide({
+    onSuccess: () => {
+      toast.message("가이드 작성 성공", { position: "top-center" });
+    },
+    onError: (error) => {
+      const message = generateErrorMessage(error);
+      toast.error(message, { position: "top-center" });
+    },
+  });
+
+  const {
+    mutate: updateGuide,
+    data: updateGuideData,
+    isPending: isUpdateGuidePending,
+  } = useUpdateGuide({
+    onSuccess: () => {
+      toast.message("가이드 업데이트 성공", { position: "top-center" });
+    },
+    onError: (error) => {
+      const message = generateErrorMessage(error);
+      toast.error(message, { position: "top-center" });
+    },
+  });
+
+  const [title, setTitle] = useState(guideEditorStore.title || "");
+  const [content, setContent] = useState(guideEditorStore.content || "");
   const [tags, setTags] = useState(
-    type === "update" ? prevTags : ["미선택", "미선택", "미선택"],
+    guideEditorStore.tags?.split(" ") || ["미선택", "미선택", "미선택"],
   );
-  const [locations, setLocations] = useState(
-    type === "update" ? prevLocations : [],
+  const [locations, setLocations] = useState<string[]>(
+    guideEditorStore.locations?.split(" ").filter(Boolean) || [],
   );
+  const [images, setImages] = useState<Image[]>([]);
 
-  const handleDeleteImage = (deleteFile: { file: File; imageUrl: string }) => {
-    setImageFiles(
-      imageFiles.filter((file) => file.imageUrl !== deleteFile.imageUrl),
+  const titleRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const locationsRef = useRef<HTMLInputElement>(null);
+
+  const handleEditGuide = async () => {
+    if (!user) return;
+
+    if (!title.trim().length) {
+      toast.error("제목을 입력하세요.", { position: "top-center" });
+      titleRef.current?.focus();
+      return;
+    }
+
+    if (!content.trim().length) {
+      toast.error("내용을 입력하세요.", { position: "top-center" });
+      contentRef.current?.focus();
+      return;
+    }
+
+    if (tags.filter((tag) => tag.match("미선택")).length > 0) {
+      toast.error("태그를 선택해주세요.", { position: "top-center" });
+      return;
+    }
+
+    const contents = {
+      writer_id: user.id,
+      title,
+      content,
+      locations: locations.join(" ").trim(),
+      tags: tags.join(" ").trim(),
+    };
+
+    if (editType === "create") {
+      createGuide({
+        contents,
+        imageFiles: [...images.map((image) => image.file)],
+      });
+    } else if (editType === "update") {
+      // updateGuide({
+      //   content,
+      //   imageFiles: [...images.map((image) => image.file)],
+      // });
+    }
+  };
+
+  const handleSelectImage = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+
+    const files = Array.from(event.target.files);
+    const resizedFiles = (await resizeImageFiles(
+      "multi",
+      1024,
+      files,
+    )) as File[];
+
+    resizedFiles!.map((file) =>
+      setImages((prevImageUrls) => [
+        ...prevImageUrls,
+        { file, filePath: URL.createObjectURL(file) },
+      ]),
     );
 
-    URL.revokeObjectURL(deleteFile.imageUrl);
+    event.target.value = "";
   };
+
+  const handleDeleteImage = (deleteFile: Image) => {
+    setImages(images.filter((image) => image.filePath !== deleteFile.filePath));
+
+    URL.revokeObjectURL(deleteFile.filePath);
+  };
+
+  useEffect(() => {
+    if (createGuideData?.id) {
+      navigate(`/guide/${createGuideData.id}`);
+    }
+  }, [createGuideData?.id, navigate]);
+
+  useEffect(() => {
+    return () => {
+      if (images.length > 0) {
+        images.map((image) => URL.revokeObjectURL(image.filePath));
+      }
+    };
+  }, []);
+
+  const isPending = isCreateGuidePending || isUpdateGuidePending;
 
   return (
     <div className="flex flex-col gap-2">
@@ -82,6 +174,8 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           제목
         </Label>
         <Input
+          disabled={isPending}
+          ref={titleRef}
           id="input-title"
           placeholder="필수"
           value={title}
@@ -98,6 +192,8 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           </span>
         </Label>
         <Input
+          disabled={isPending}
+          ref={locationsRef}
           placeholder="선택사항"
           onChange={(event) => {
             if (!event.target.value.trim()) setLocations([]);
@@ -110,7 +206,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
         {/* locations preview */}
         <div>
           <ul className="mt-2 flex items-center gap-0.5 px-1 text-sm">
-            <li>
+            <li key={"none"}>
               <span className="bg-muted-foreground text-muted mr-1.5 rounded-lg border-0 px-1 py-0.5">
                 위치
               </span>
@@ -118,7 +214,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
             {locations.map((location, index) => {
               if (index < locations.length - 1) {
                 return (
-                  <li>
+                  <li key={index}>
                     <span className="bg-muted rounded-lg px-1 py-0.5">
                       {location}
                     </span>
@@ -127,7 +223,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
                 );
               } else {
                 return (
-                  <li>
+                  <li key={index}>
                     <span className="bg-muted rounded-lg px-1 py-0.5">
                       {location}
                     </span>
@@ -151,6 +247,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           {/* first tag */}
           <div className="flex w-full flex-col justify-start">
             <Select
+              disabled={isPending}
               value={tags[0]}
               onValueChange={(value) =>
                 setTags((prev) => {
@@ -174,6 +271,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           {/* second tag */}
           <div className="flex w-full flex-col justify-start">
             <Select
+              disabled={isPending}
               value={tags[1]}
               onValueChange={(value) =>
                 setTags((prev) => {
@@ -203,6 +301,7 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           {/* third tag */}
           <div className="flex w-full flex-col justify-start">
             <Select
+              disabled={isPending}
               value={tags[2]}
               onValueChange={(value) =>
                 setTags((prev) => {
@@ -237,6 +336,8 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           내용
         </Label>
         <Textarea
+          disabled={isPending}
+          ref={contentRef}
           value={content}
           onChange={(event) => setContent(event.target.value)}
           id="input-content"
@@ -253,69 +354,42 @@ export default function GuideEditPage({ type }: { type: GuideEditType }) {
           <ImageAdd02Icon size={20} />
         </Label>
         <Input
+          disabled={isPending}
           id="input-file"
           type="file"
           accept="image/*"
           multiple
           hidden
-          onChange={async (event: ChangeEvent<HTMLInputElement>) => {
-            if (!event.target.files) return;
-
-            const files = Array.from(event.target.files);
-            const resizedFiles = (await resizeImageFiles(
-              "multi",
-              1024,
-              files,
-            )) as File[];
-
-            resizedFiles!.map((file) =>
-              setImageFiles((prevImageUrls) => [
-                ...prevImageUrls,
-                {
-                  file,
-                  imageUrl: URL.createObjectURL(file),
-                },
-              ]),
-            );
-
-            event.target.value = "";
-          }}
+          onChange={(event) => handleSelectImage(event)}
         />
 
         <Button
-          onClick={() => {
-            const message = `data : ${title}
-${writer}
-${position}
-${content}
-${locations}
-${tags}
-${imageFiles}`;
-            toast.message(message, {
-              position: "top-center",
-            });
-          }}
+          disabled={isPending}
+          onClick={handleEditGuide}
           className="cursor-pointer"
         >
           저장
         </Button>
       </div>
 
-      {imageFiles.length > 0 && (
+      {images.length > 0 && (
         <div>
           <Carousel>
             <CarouselContent>
-              {imageFiles.map((file, index) => (
-                <CarouselItem
-                  key={index}
-                  className="basis-3/4"
-                  onClick={() => handleDeleteImage(file)}
-                >
-                  <div className="relative cursor-pointer overflow-hidden rounded-sm">
+              {images.map((image, index) => (
+                <CarouselItem key={index} className="basis-4/7">
+                  <div className="relative h-60 w-auto cursor-pointer overflow-hidden rounded-sm">
+                    <Cancel02Icon
+                      onClick={() => {
+                        if (isPending) return;
+                        handleDeleteImage(image);
+                      }}
+                      className="absolute top-2 right-3 h-5 w-5 rounded-full bg-[oklch(0_0_0/0.10)] text-white"
+                    />
                     <img
                       className="h-full w-full object-cover"
-                      src={file.imageUrl}
-                      alt={`preview-${file}`}
+                      src={image.filePath}
+                      alt={`preview-${image}`}
                     />
                   </div>
                 </CarouselItem>
