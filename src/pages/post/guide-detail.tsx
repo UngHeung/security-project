@@ -9,7 +9,6 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { useGuideData } from "@/hooks/queries/use-guide-data";
-import { useProfileData } from "@/hooks/queries/use-profile-data";
 import { getPositionWithRole } from "@/lib/get-role-or-position";
 import type { RoleType } from "@/lib/types";
 import {
@@ -36,11 +35,6 @@ export default function GuideDetailPage() {
     guideId: Number(params.id),
     type: "detail",
   });
-  const {
-    data: writer,
-    isPending: isWriterPending,
-    error: writerError,
-  } = useProfileData(guide?.writer_id);
 
   const locations = guide?.locations?.length
     ? guide?.locations?.split(" ")
@@ -57,8 +51,8 @@ export default function GuideDetailPage() {
     return () => resetGuideEditor();
   }, [resetGuideEditor]);
 
-  if (isGuidePending || isWriterPending) return <Loader />;
-  if (guideError || writerError) return <FallBack />;
+  if (isGuidePending) return <Loader />;
+  if (guideError) return <FallBack />;
 
   return (
     <div>
@@ -66,11 +60,11 @@ export default function GuideDetailPage() {
       <header className="flex flex-col items-start gap-2 border-b py-2">
         <h2 className="font-semibold">{guide.title}</h2>
         <div className="flex w-full items-center justify-end gap-1 text-sm">
-          <span className="font-semibold">{writer!.name}</span>
-          <span>{getPositionWithRole(writer!.role as RoleType)}</span>
+          <span className="font-semibold">{guide.writer.name}</span>
+          <span>{getPositionWithRole(guide.writer.role as RoleType)}</span>
           <span className="bg-accent h-7 w-7 rounded-full">
             <img
-              src={writer?.avatar_url || defaultAvatar}
+              src={guide.writer?.avatar_url || defaultAvatar}
               alt={"writer-avater"}
             />
           </span>
