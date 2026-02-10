@@ -1,4 +1,4 @@
-import type { CreateGuideType } from "@/api/post";
+import type { CreateGuideType } from "@/api/guide";
 import { create } from "zustand";
 import { combine, devtools } from "zustand/middleware";
 
