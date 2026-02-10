@@ -44,7 +44,7 @@ export default function GuideDetailPage() {
         {locations.map((location, index) => {
           if (index < locations.length - 1) {
             return (
-              <li>
+              <li key={index}>
                 <span className="bg-muted rounded-lg px-1 py-0.5">
                   {location}
                 </span>
@@ -53,7 +53,7 @@ export default function GuideDetailPage() {
             );
           } else {
             return (
-              <li>
+              <li key={index}>
                 <span className="bg-muted rounded-lg px-1 py-0.5">
                   {location}
                 </span>
@@ -67,12 +67,9 @@ export default function GuideDetailPage() {
       <div>
         <Carousel>
           <CarouselContent className="mt-3">
-            {images.map((image) => (
-              <CarouselItem className="basis-8/9">
-                <img
-                  className="rounded-lg"
-                  src="https://picsum.photos/800/600"
-                />
+            {images.map((image, index) => (
+              <CarouselItem key={index} className="basis-8/9">
+                <img className="rounded-lg" src={image} />
               </CarouselItem>
             ))}
           </CarouselContent>
