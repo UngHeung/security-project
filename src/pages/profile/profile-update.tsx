@@ -71,12 +71,13 @@ export default function ProfileUpdate() {
     if (!event.target.files) return;
 
     const file = Array.from(event.target.files)[0];
-    const resizedFile = (await resizeImageFiles(
-      "single",
-      200,
-      [],
-      file,
-    )) as File;
+    const fileSize = file.size;
+    const fileExtension = file.name.split(".")[1];
+    const resizedFile =
+      fileSize <= 500 * 1000 && // 500kb
+      (fileExtension === "gif" || fileExtension === "webp")
+        ? file
+        : ((await resizeImageFiles("single", 200, [], file)) as File);
 
     const previewAvatarUrl = URL.createObjectURL(resizedFile);
 
