@@ -83,17 +83,16 @@ export async function createGuideWithImages({
 
     if (imageFiles?.length > 0) {
       await Promise.all(
-        imageFiles.map((file) => {
+        imageFiles.map(async (file) => {
           const fileExtension = file.name.split(".").pop() || "webp";
-          const fileName = `${Date.now()}-${crypto.randomUUID()}.${fileExtension}`;
-          const filePath = `${contents.writer_id}/${guide.id}/${fileName}`;
+          const filePath = `${contents.writer_id}/guide/${guide.id}/${Date.now()}-${crypto.randomUUID()}.${fileExtension}`;
 
-          uploadImageUrls.push(filePath);
-
-          uploadImage({
+          const imageUrl = await uploadImage({
             file,
-            filePath: filePath,
+            filePath,
           });
+
+          uploadImageUrls.push(imageUrl);
         }),
       );
     }
