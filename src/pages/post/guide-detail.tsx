@@ -16,14 +16,17 @@ import {
   useSetGuideEditor,
   type EditGuideType,
 } from "@/store/guide-edit";
+import { useSession } from "@/store/session";
 import { TagsIcon } from "hugeicons-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 
 export default function GuideDetailPage() {
   const navigate = useNavigate();
-
   const params = useParams<{ id: string }>();
+  const session = useSession();
+  const user = session?.user;
+
   const setGuideEditor = useSetGuideEditor();
   const resetGuideEditor = useResetGuideEditor();
 
@@ -136,13 +139,25 @@ export default function GuideDetailPage() {
 
       <div className="mt-4 flex justify-end">
         <div className="flex gap-2">
-          <Button
-            onClick={() => {
-              navigate(`/guide/update/${guide.id}`);
-            }}
-          >
-            수정하기
-          </Button>
+          {user && guide.writer.id === user.id && (
+            <>
+              <Button
+                onClick={() => {
+                  navigate(`/guide/update/${guide.id}`);
+                }}
+              >
+                수정하기
+              </Button>
+              <Button
+                variant={"destructive"}
+                onClick={() => {
+                  //
+                }}
+              >
+                삭제
+              </Button>
+            </>
+          )}
           <Button
             variant={"secondary"}
             onClick={() => {
