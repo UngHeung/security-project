@@ -8,6 +8,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { useDeleteGuide } from "@/hooks/mutations/guide/use-delete-guide";
 import { useGuideData } from "@/hooks/queries/use-guide-data";
 import { getPositionWithRole } from "@/lib/get-role-or-position";
 import type { RoleType } from "@/lib/types";
@@ -20,6 +21,7 @@ import { useSession } from "@/store/session";
 import { TagsIcon } from "hugeicons-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
 
 export default function GuideDetailPage() {
   const navigate = useNavigate();
@@ -29,6 +31,19 @@ export default function GuideDetailPage() {
 
   const setGuideEditor = useSetGuideEditor();
   const resetGuideEditor = useResetGuideEditor();
+
+  const {
+    mutate: deleteGuide,
+    isPending: isDeleteGuidePending,
+    error: deleteGuideError,
+  } = useDeleteGuide({
+    onSuccess: () => {
+      toast.success("가이드가 성공적으로 삭제되었습니다.", {
+        position: "top-center",
+      });
+      navigate("/guide");
+    },
+  });
 
   const {
     data: guide,
@@ -53,6 +68,17 @@ export default function GuideDetailPage() {
   useEffect(() => {
     return () => resetGuideEditor();
   }, [resetGuideEditor]);
+
+  const handleDeleteGuide = async () => {
+    try {
+      await deleteGuide({ userId: user!.id, guideId: Number(params.id) });
+      navigate("/guide");
+    } catch (error) {
+      toast.error("가이드 삭제에 실패했습니다. 다시 시도해주세요.", {
+        position: "top-center",
+      });
+    }
+  };
 
   if (isGuidePending) return <Loader />;
   if (guideError) return <FallBack />;
@@ -111,7 +137,10 @@ export default function GuideDetailPage() {
           <Carousel>
             <CarouselContent className="mt-3">
               {imageUrls.map((image, index) => (
-                <CarouselItem key={index} className="basis-8/9">
+                <CarouselItem
+                  key={index}
+                  className={imageUrls.length === 1 ? "basis-1/1" : "basis-8/9"}
+                >
                   <img className="rounded-lg" src={image} />
                 </CarouselItem>
               ))}
@@ -142,6 +171,7 @@ export default function GuideDetailPage() {
           {user && guide.writer.id === user.id && (
             <>
               <Button
+                disabled={isDeleteGuidePending}
                 onClick={() => {
                   navigate(`/guide/update/${guide.id}`);
                 }}
@@ -149,16 +179,16 @@ export default function GuideDetailPage() {
                 수정하기
               </Button>
               <Button
+                disabled={isDeleteGuidePending}
                 variant={"destructive"}
-                onClick={() => {
-                  //
-                }}
+                onClick={handleDeleteGuide}
               >
                 삭제
               </Button>
             </>
           )}
           <Button
+            disabled={isDeleteGuidePending}
             variant={"secondary"}
             onClick={() => {
               navigate(`/guide`);
