@@ -43,7 +43,7 @@ export default function GuideItem({
           </span>
         </div>
       </header>
-      <p className="text-sm">{data?.content}</p>
+      <p className="line-clamp-2 pt-2 text-sm">{data?.content}</p>
       <div className="flex justify-end">
         <Button
           className="text-muted-foreground"
