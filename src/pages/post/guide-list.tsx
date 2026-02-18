@@ -3,11 +3,11 @@ import Loader from "@/components/loader";
 import { Button } from "@/components/ui/button";
 import { useInfiniteGuideData } from "@/hooks/queries/use-infinity-guides";
 import { useSession } from "@/store/session";
+import { QuillWrite01Icon } from "hugeicons-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router";
 import GuideItem from "./guide-item";
-import { QuillWrite01Icon } from "hugeicons-react";
 
 export default function GuideList() {
   const session = useSession();
@@ -37,7 +37,7 @@ export default function GuideList() {
       >
         <QuillWrite01Icon className="size-7" />
       </Button>
-      {data.pages.length < 0 ? (
+      {data.pages[0].length === 0 ? (
         <div className="flex justify-center">
           <span className="mt-4 text-sm">
             작성된 가이드가 없습니다.{" "}
