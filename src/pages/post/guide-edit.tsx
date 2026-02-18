@@ -78,9 +78,7 @@ export default function GuideEditPage() {
       "미선택",
     ],
   );
-  useEffect(() => {
-    console.log(tags);
-  }, [tags]);
+
   const [locations, setLocations] = useState<string[]>(
     guideEditorStore.locations?.split(" ").filter(Boolean) || [],
   );
@@ -271,6 +269,7 @@ export default function GuideEditPage() {
                 <SelectItem value={"미선택"}>미선택</SelectItem>
                 <SelectItem value={"반출"}>반출</SelectItem>
                 <SelectItem value={"환입"}>환입</SelectItem>
+                <SelectItem value={"기타"}>기타</SelectItem>
               </SelectContent>
             </Select>
           </div>
