@@ -135,10 +135,6 @@ export async function deleteGuide({
     .select()
     .single();
 
-  if (data?.image_urls && data?.image_urls?.length > 0) {
-    await deleteImagesInPath(`${userId}/guide/${guideId}`);
-  }
-
   if (error) throw error;
   return data;
 }
