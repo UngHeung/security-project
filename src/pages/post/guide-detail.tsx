@@ -60,6 +60,17 @@ export default function GuideDetailPage() {
   const tags = guide?.tags.split(" ") || [];
   const imageUrls = guide?.image_urls?.split(" ") || [];
 
+  const handleDeleteGuide = () => {
+    try {
+      deleteGuide({ userId: user!.id, guideId: Number(params.id) });
+      navigate("/guide");
+    } catch (error) {
+      toast.error("가이드 삭제에 실패했습니다. 다시 시도해주세요.", {
+        position: "top-center",
+      });
+    }
+  };
+
   useEffect(() => {
     if (!guide) return;
     setGuideEditor(guide as EditGuideType);
@@ -68,17 +79,6 @@ export default function GuideDetailPage() {
   useEffect(() => {
     return () => resetGuideEditor();
   }, [resetGuideEditor]);
-
-  const handleDeleteGuide = async () => {
-    try {
-      await deleteGuide({ userId: user!.id, guideId: Number(params.id) });
-      navigate("/guide");
-    } catch (error) {
-      toast.error("가이드 삭제에 실패했습니다. 다시 시도해주세요.", {
-        position: "top-center",
-      });
-    }
-  };
 
   if (isGuidePending) return <Loader />;
   if (guideError) return <FallBack />;
