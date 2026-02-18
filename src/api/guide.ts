@@ -1,6 +1,6 @@
 import supabase from "@/lib/supabase";
 import type { GuideEntity } from "@/lib/types";
-import { uploadImage } from "./image";
+import { deleteImagesInPath, uploadImage } from "./image";
 
 export type CreateGuideType = Pick<
   GuideEntity,
@@ -104,7 +104,7 @@ export async function createGuideWithImages({
 
     return updatedGuide;
   } catch (error) {
-    deleteGuide(guide.id);
+    deleteGuide({ userId: contents.writer_id, guideId: guide.id });
     throw error;
   }
 }
@@ -121,13 +121,23 @@ export async function updateGuide(post: Partial<GuideEntity> & { id: number }) {
   return data;
 }
 
-export async function deleteGuide(guideId: number) {
+export async function deleteGuide({
+  userId,
+  guideId,
+}: {
+  userId: string;
+  guideId: number;
+}) {
   const { data, error } = await supabase
     .from("guide")
     .delete()
     .eq("id", guideId)
     .select()
     .single();
+
+  if (data?.image_urls && data?.image_urls?.length > 0) {
+    await deleteImagesInPath(`${userId}/guide/${guideId}`);
+  }
 
   if (error) throw error;
   return data;
