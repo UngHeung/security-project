@@ -29,14 +29,6 @@ export default function Menu() {
         <NavigationMenuList className="gap-2">
           <NavigationMenuItem>
             <NavigationMenuLink>
-              <Button variant="ghost" onClick={() => handleNavigate("/")}>
-                메인
-              </Button>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem>
-            <NavigationMenuLink>
               <Button variant="ghost" onClick={() => handleNavigate("/search")}>
                 검색
               </Button>
