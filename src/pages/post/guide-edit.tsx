@@ -69,20 +69,24 @@ export default function GuideEditPage() {
     },
   });
 
-  const [title, setTitle] = useState(guideEditorStore.title || "");
-  const [content, setContent] = useState(guideEditorStore.content || "");
+  const [title, setTitle] = useState(
+    editType === "create" ? "" : guideEditorStore.title,
+  );
+  const [content, setContent] = useState(
+    editType === "create" ? "" : guideEditorStore.content,
+  );
   const [tags, setTags] = useState(
-    (guideEditorStore.tags.length > 1 && guideEditorStore.tags?.split(" ")) || [
-      "미선택",
-      "미선택",
-      "미선택",
-    ],
+    editType === "create"
+      ? ["미선택", "미선택", "미선택"]
+      : guideEditorStore.tags?.split(" "),
   );
 
   const [locations, setLocations] = useState<string[]>(
-    guideEditorStore.locations?.split(" ").filter(Boolean) || [],
+    editType === "create" ? [] : guideEditorStore.locations?.split(" ") || [],
   );
-  const [images, setImages] = useState<Image[]>([]);
+  const [images, setImages] = useState<Image[]>(
+    editType === "create" ? [] : [],
+  );
 
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
@@ -122,10 +126,7 @@ export default function GuideEditPage() {
         imageFiles: [...images.map((image) => image.file)],
       });
     } else if (editType === "update") {
-      // updateGuide({
-      //   content,
-      //   imageFiles: [...images.map((image) => image.file)],
-      // });
+      updateGuide({ ...contents, id: Number(params.id) });
     }
   };
 
@@ -149,17 +150,20 @@ export default function GuideEditPage() {
     event.target.value = "";
   };
 
-  const handleDeleteImage = (deleteFile: Image) => {
-    setImages(images.filter((image) => image.filePath !== deleteFile.filePath));
+  const handleDeleteImage = ({ deleteFile }: { deleteFile: Image }) => {
+    if (!deleteFile) return;
 
+    setImages(images.filter((image) => image.filePath !== deleteFile.filePath));
     URL.revokeObjectURL(deleteFile.filePath);
   };
 
   useEffect(() => {
-    if (createGuideData?.id) {
-      navigate(`/guide/${createGuideData.id}`);
+    if (editType === "create" && createGuideData?.id) {
+      navigate(`/guide/${createGuideData?.id}`);
+    } else if (editType === "update" && updateGuideData?.id) {
+      navigate(`/guide/${updateGuideData.id}`);
     }
-  }, [createGuideData?.id, navigate]);
+  }, [editType, createGuideData?.id, updateGuideData?.id, navigate]);
 
   useEffect(() => {
     return () => {
@@ -352,22 +356,28 @@ export default function GuideEditPage() {
         />
       </div>
 
-      <div className="flex items-center justify-between">
-        <Label
-          htmlFor="input-file"
-          className="text-muted-foreground bg-muted flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm border p-1 hover:brightness-90"
-        >
-          <ImageAdd02Icon size={20} />
-        </Label>
-        <Input
-          disabled={isPending}
-          id="input-file"
-          type="file"
-          accept="image/*"
-          multiple
-          hidden
-          onChange={(event) => handleSelectImage(event)}
-        />
+      <div
+        className={`flex items-center ${editType === "create" ? "justify-between" : "justify-end"}`}
+      >
+        {editType === "create" && (
+          <>
+            <Label
+              htmlFor="input-file"
+              className="text-muted-foreground bg-muted flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm border p-1 hover:brightness-90"
+            >
+              <ImageAdd02Icon size={20} />
+            </Label>
+            <Input
+              disabled={isPending}
+              id="input-file"
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+              onChange={(event) => handleSelectImage(event)}
+            />
+          </>
+        )}
 
         <div className="flex gap-2">
           <Button disabled={isPending} onClick={handleEditGuide}>
@@ -385,28 +395,30 @@ export default function GuideEditPage() {
 
       {images.length > 0 && (
         <div>
-          <Carousel>
-            <CarouselContent>
-              {images.map((image, index) => (
-                <CarouselItem key={index} className="basis-4/7">
-                  <div className="relative h-60 w-auto cursor-pointer overflow-hidden rounded-sm">
-                    <Cancel02Icon
-                      onClick={() => {
-                        if (isPending) return;
-                        handleDeleteImage(image);
-                      }}
-                      className="absolute top-2 right-3 h-5 w-5 rounded-full bg-[oklch(0_0_0/0.10)] text-white"
-                    />
-                    <img
-                      className="h-full w-full object-cover"
-                      src={image.filePath}
-                      alt={`preview-${image}`}
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
+          {images.length > 0 && (
+            <Carousel>
+              <CarouselContent>
+                {images.map((image, index) => (
+                  <CarouselItem key={index} className="basis-4/7">
+                    <div className="relative h-60 w-auto cursor-pointer overflow-hidden rounded-sm">
+                      <Cancel02Icon
+                        onClick={() => {
+                          if (isPending) return;
+                          handleDeleteImage({ deleteFile: image });
+                        }}
+                        className="absolute top-2 right-3 h-5 w-5 rounded-full bg-[oklch(0_0_0/0.10)] text-white"
+                      />
+                      <img
+                        className="h-full w-full object-cover"
+                        src={image.filePath}
+                        alt={`preview-${image}`}
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          )}
         </div>
       )}
     </div>

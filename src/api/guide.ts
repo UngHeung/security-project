@@ -109,11 +109,13 @@ export async function createGuideWithImages({
   }
 }
 
-export async function updateGuide(post: Partial<GuideEntity> & { id: number }) {
+export async function updateGuide(
+  newGuide: Partial<GuideEntity> & { id: number },
+) {
   const { data, error } = await supabase
     .from("guide")
-    .update(post)
-    .eq("id", post.id)
+    .update(newGuide)
+    .eq("id", newGuide.id)
     .select()
     .single();
 
