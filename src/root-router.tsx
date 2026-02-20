@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router";
 import GlobalLayout from "./components/ui/layouts/global-layout";
 import GuestOnlyLayout from "./components/ui/layouts/guest-only-layout";
 import MemberOnlyLayout from "./components/ui/layouts/member-only-layout";
+import PostLayout from "./components/ui/layouts/post-layout";
 import ForgetPasswordPage from "./pages/auth/forget-password";
 import ResetPasswordPage from "./pages/auth/reset-password";
 import SignInPage from "./pages/auth/sign-in";
@@ -31,8 +32,10 @@ export default function RootRouter() {
         <Route path="/search" element={<SearchPage />} />
 
         {/* guide */}
-        <Route path="/guide/:id" element={<GuideDetailPage />} />
-        <Route path="/guide" element={<GuideList />} />
+        <Route element={<PostLayout type="guide" />}>
+          <Route path="/guide/:id" element={<GuideDetailPage />} />
+          <Route path="/guide" element={<GuideList />} />
+        </Route>
 
         <Route element={<MemberOnlyLayout />}>
           {/* auth */}
@@ -50,8 +53,10 @@ export default function RootRouter() {
           <Route path="/profile-update" element={<ProfileUpdate />} />
 
           {/* guide */}
-          <Route path="/guide/write" element={<GuideEditPage />} />
-          <Route path="/guide/update/:id" element={<GuideEditPage />} />
+          <Route element={<PostLayout type="guide" />}>
+            <Route path="/guide/write" element={<GuideEditPage />} />
+            <Route path="/guide/update/:id" element={<GuideEditPage />} />
+          </Route>
         </Route>
       </Route>
 
