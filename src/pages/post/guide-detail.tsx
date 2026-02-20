@@ -156,7 +156,7 @@ export default function GuideDetailPage() {
         </p>
 
         {/* tags */}
-        <ul className="mt-2 flex items-center justify-end gap-1">
+        <ul className="mt-2 flex items-center justify-start gap-1">
           {tags.map((tag, index) => (
             <Badge key={index} variant={"secondary"} className="cursor-default">
               {tag}

@@ -2,17 +2,9 @@ import defaultAvatar from "@/assets/default-avatar.jpg";
 import { Button } from "@/components/ui/button";
 import { useProfileData } from "@/hooks/queries/use-profile-data";
 import { getPositionWithRole } from "@/lib/get-role-or-position";
-import type { RoleType } from "@/lib/types";
+import type { PositionType, RoleType } from "@/lib/types";
 import { useSession } from "@/store/session";
 import { useNavigate } from "react-router";
-
-// 임시
-const tempUser = {
-  name: "홍길동",
-  postion: "파트장",
-  email: "abce@example.com",
-  avatar_url: defaultAvatar,
-};
 
 export default function ProfileDetailPage({
   isMyProfile,
@@ -35,9 +27,7 @@ export default function ProfileDetailPage({
         <div className="bg-muted mb-2 h-20 w-20 overflow-hidden rounded-full">
           <img
             src={
-              isMyProfile
-                ? profile?.avatar_url || defaultAvatar
-                : tempUser.avatar_url
+              isMyProfile ? profile?.avatar_url || defaultAvatar : defaultAvatar
             }
             alt="avatar-image"
             className="h-full w-full object-cover"
@@ -58,14 +48,14 @@ export default function ProfileDetailPage({
           <span>
             {isMyProfile
               ? getPositionWithRole(profile?.role as RoleType)
-              : tempUser.postion}
+              : ("임시" as PositionType)}
           </span>
         </div>
 
         {/* email */}
         <div className="flex gap-1">
           <span className="font-semibold">
-            {isMyProfile ? user?.email : tempUser.email}
+            {isMyProfile ? user?.email : "abc@example.com"}
           </span>
         </div>
       </div>
