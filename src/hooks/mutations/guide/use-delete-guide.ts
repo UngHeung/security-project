@@ -1,5 +1,6 @@
 import { deleteGuide } from "@/api/guide";
 import { deleteImagesInPath } from "@/api/image";
+import { QUERY_KEYS } from "@/lib/constants";
 import type { UseMutationCallback } from "@/lib/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -17,7 +18,7 @@ export function useDeleteGuide(callbacks?: UseMutationCallback) {
         );
       }
 
-      // queryClient.invalidateQueries(["guide-list"]);
+      queryClient.resetQueries({ queryKey: QUERY_KEYS.guide.list });
     },
     onError: (error) => {
       if (callbacks?.onError) callbacks.onError(error);
