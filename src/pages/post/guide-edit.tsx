@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -6,15 +7,6 @@ import {
 } from "@/components/ui/carousel";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateGuide } from "@/hooks/mutations/guide/use-create-guide";
 import { useUpdateGuide } from "@/hooks/mutations/guide/use-update-guide";
@@ -75,10 +67,10 @@ export default function GuideEditPage() {
   const [content, setContent] = useState(
     editType === "create" ? "" : guideEditorStore.content,
   );
-  const [tags, setTags] = useState(
-    editType === "create"
-      ? ["미선택", "미선택", "미선택"]
-      : guideEditorStore.tags?.split(" "),
+
+  const [tag, setTag] = useState("");
+  const [tags, setTags] = useState<string[]>(
+    editType === "create" ? [] : guideEditorStore.tags?.split(" ") || [],
   );
 
   const [locations, setLocations] = useState<string[]>(
@@ -91,6 +83,7 @@ export default function GuideEditPage() {
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const locationsRef = useRef<HTMLInputElement>(null);
+  const tagRef = useRef<HTMLInputElement>(null);
 
   const handleEditGuide = async () => {
     if (!user) return;
@@ -155,6 +148,14 @@ export default function GuideEditPage() {
 
     setImages(images.filter((image) => image.filePath !== deleteFile.filePath));
     URL.revokeObjectURL(deleteFile.filePath);
+  };
+
+  const handleAddTag = (tag: string) => {
+    setTags((prevTags) => [...prevTags, tag]);
+  };
+
+  const handleDeleteTag = (index: number) => {
+    setTags(tags.filter((_, i) => i !== index));
   };
 
   useEffect(() => {
@@ -248,96 +249,53 @@ export default function GuideEditPage() {
       <div className="mt-2">
         <Label>
           태그
-          <span className="text-muted-foreground -ml-1.5 text-xs">
-            (필수 선택)
-          </span>
+          <span className="text-muted-foreground -ml-1.5 text-xs">(필수)</span>
         </Label>
-        <SelectGroup className="mb-2 flex justify-between gap-2">
-          {/* first tag */}
-          <div className="flex w-full flex-col justify-start">
-            <Select
-              disabled={isPending}
-              value={tags[0]}
-              onValueChange={(value) =>
-                setTags((prev) => {
-                  const newTags = [value!, prev[1], prev[2]];
-                  return newTags;
-                })
-              }
-            >
-              <SelectLabel>반출/환입</SelectLabel>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="반출/환입" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={"미선택"}>미선택</SelectItem>
-                <SelectItem value={"반출"}>반출</SelectItem>
-                <SelectItem value={"환입"}>환입</SelectItem>
-                <SelectItem value={"기타"}>기타</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="flex items-center gap-2">
+          <Input
+            ref={tagRef}
+            disabled={isPending}
+            placeholder="필수"
+            value={tag}
+            onChange={(event) => setTag(event.target.value)}
+          />
+          <Button
+            disabled={tag.trim().length === 0 || isPending}
+            variant={"default"}
+            onClick={() => {
+              if (tags.find((t) => t === tag.trim())) {
+                toast.error("이미 추가된 태그입니다.", {
+                  position: "top-center",
+                });
 
-          {/* second tag */}
-          <div className="flex w-full flex-col justify-start">
-            <Select
-              disabled={isPending}
-              value={tags[1]}
-              onValueChange={(value) =>
-                setTags((prev) => {
-                  const newTags = [prev[0], value!, prev[2]];
-                  return newTags;
-                })
+                setTag("");
+                tagRef.current?.focus();
+                return;
               }
-            >
-              <SelectLabel>카테고리</SelectLabel>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="반출/환입" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={"미선택"}>미선택</SelectItem>
-                <SelectItem value={"정보자산"}>정보자산</SelectItem>
-                <SelectItem value={"미등록정보자산"}>미등록정보자산</SelectItem>
-                <SelectItem value={"고정일반자산"}>고정일반</SelectItem>
-                <SelectItem value={"고정일반자산(수시)"}>
-                  고정일반자산(수시)
-                </SelectItem>
-                <SelectItem value={"문서"}>문서</SelectItem>
-                <SelectItem value={"오반입물품"}>오반입물품</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
 
-          {/* third tag */}
-          <div className="flex w-full flex-col justify-start">
-            <Select
-              disabled={isPending}
-              value={tags[2]}
-              onValueChange={(value) =>
-                setTags((prev) => {
-                  const newTags = [prev[0], prev[1], value!];
-                  return newTags;
-                })
-              }
-            >
-              <SelectLabel>자산종류</SelectLabel>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="반출/환입" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={"미선택"}>미선택</SelectItem>
-                <SelectItem value={"노트북"}>노트북</SelectItem>
-                <SelectItem value={"휴대폰"}>휴대폰</SelectItem>
-                <SelectItem value={"랩탑"}>랩탑</SelectItem>
-                <SelectItem value={"저장소"}>저장소</SelectItem>
-                <SelectItem value={"보드"}>보드</SelectItem>
-                <SelectItem value={"녹음/녹화장치"}>녹음/녹화장치</SelectItem>
-                <SelectItem value={"포터블모니터"}>포터블모니터</SelectItem>
-                <SelectItem value={"기타"}>기타</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </SelectGroup>
+              setTags((prevTag) => [...prevTag, tag.trim()]);
+              setTag("");
+              tagRef.current?.focus();
+            }}
+          >
+            추가
+          </Button>
+        </div>
+        <div>
+          <ul className="mt-0.5 flex gap-1">
+            {tags.map((tag, index) => (
+              <li key={index} className="mt-0.5 inline-block">
+                <Badge
+                  className="relative h-6 cursor-default rounded-md"
+                  variant={"outline"}
+                  onClick={() => handleDeleteTag(index)}
+                >
+                  {tag}
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       {/* content */}

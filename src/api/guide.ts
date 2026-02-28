@@ -1,6 +1,6 @@
 import supabase from "@/lib/supabase";
 import type { GuideEntity } from "@/lib/types";
-import { deleteImagesInPath, uploadImage } from "./image";
+import { uploadImage } from "./image";
 
 export type CreateGuideType = Pick<
   GuideEntity,
@@ -114,7 +114,7 @@ export async function updateGuide(
 ) {
   const { data, error } = await supabase
     .from("guide")
-    .update(newGuide)
+    .update({ ...newGuide, updated_at: String(new Date().toISOString()) })
     .eq("id", newGuide.id)
     .select()
     .single();

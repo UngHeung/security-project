@@ -50,14 +50,6 @@ export default function Menu() {
                 <li key={2}>
                   <Button
                     variant="ghost"
-                    onClick={() => handleNavigate("/guide/write")}
-                  >
-                    가이드작성
-                  </Button>
-                </li>
-                <li key={4}>
-                  <Button
-                    variant="ghost"
                     onClick={() => handleNavigate("/board/notice")}
                   >
                     공지사항
