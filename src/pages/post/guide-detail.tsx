@@ -20,7 +20,7 @@ import {
 import { useSession } from "@/store/session";
 import { TagsIcon } from "hugeicons-react";
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 
 export default function GuideDetailPage() {
@@ -154,6 +154,25 @@ export default function GuideDetailPage() {
         <p className="border-b border-dashed p-4 text-base whitespace-pre-wrap">
           {guide.content}
         </p>
+
+        {/* reference link */}
+        {guide.reference_ids && guide.reference_ids.trim().length > 0 && (
+          <div className="border-b px-4 py-1 text-sm">
+            <ul className="text-muted-foreground flex flex-col gap-0.5">
+              {guide.reference_ids.split(" ").map((id, index) => (
+                <li
+                  className="hover:text-accent-foreground hover:underline"
+                  key={index}
+                >
+                  <Link
+                    className="cursor-default"
+                    to={`/guide/${id}`}
+                  >{`참고 가이드 ${index + 1}`}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* tags */}
         <ul className="mt-2 flex items-center justify-start gap-1">
