@@ -17,35 +17,38 @@ export type Database = {
       guide: {
         Row: {
           content: string
-          created_at: string | null
+          created_at: string
           id: number
           image_urls: string | null
           locations: string | null
+          reference_ids: string | null
           tags: string
           title: string
-          updated_at: string | null
+          updated_at: string
           writer_id: string
         }
         Insert: {
           content: string
-          created_at?: string | null
+          created_at?: string
           id?: number
           image_urls?: string | null
           locations?: string | null
+          reference_ids?: string | null
           tags: string
           title: string
-          updated_at?: string | null
+          updated_at?: string
           writer_id?: string
         }
         Update: {
           content?: string
-          created_at?: string | null
+          created_at?: string
           id?: number
           image_urls?: string | null
           locations?: string | null
+          reference_ids?: string | null
           tags?: string
           title?: string
-          updated_at?: string | null
+          updated_at?: string
           writer_id?: string
         }
         Relationships: [
